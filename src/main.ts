@@ -1,10 +1,10 @@
+import * as dotenv from "../node_modules/dotenv"
+import { LastFmDataGrabber } from "./lastfm-data-grabber/main";
+
+dotenv.config(); 
+
 function sayMyName(name: string): void {
-  if (name === 'Heisenberg') {
-    console.log("You're right");
-  } else {
-    console.log("You're wrong");
-  }
+  const lfm = new LastFmDataGrabber;
+  lfm.main();
 }
-
-
 sayMyName("Heisenberg");
