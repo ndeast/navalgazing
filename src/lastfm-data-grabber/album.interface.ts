@@ -2,5 +2,6 @@ export interface Album {
   album: string,
   artist: string,
   mbid?: string,
-  playcount: number
+  playcount: number,
+  newListen?: boolean
 }
