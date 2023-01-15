@@ -1,5 +1,4 @@
 import LastFMTyped from 'lastfm-typed';
-import AlbumClass from 'lastfm-typed/dist/classes/album';
 import { Album } from './album.interface';
 export class LastFmDataGrabber {
   constructor() {}
@@ -38,6 +37,23 @@ export class LastFmDataGrabber {
         album.newListen ? this.pushToMap(album, newListens) : this.pushToMap(album, listening);
       } 
     }
+
+    let outstring = this.buildOutputString(listening, newListens);
+    console.log(outstring)
+  }
+
+  buildOutputString(listening: Map<string, Album[]>, newListens: Map<string, Album[]>) {
+    let outString = 'First Listens:\n\n';
+    for (let [x, y] of newListens) {
+      let albumNames = y.map(y => y.album).join(', ')
+      outString = outString + `${x} - ${albumNames}\n`
+    }
+    outString = outString + '\nListening: \n\n' 
+    for (let [x, y] of listening) {
+      let albumNames = y.map(y => y.album).join(', ')
+      outString = outString + `${x} - ${albumNames}\n`
+    }
+    return outString;
   }
 
   pushToMap(album: Album, map: Map<string, Album[]>) {
