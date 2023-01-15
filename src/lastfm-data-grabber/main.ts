@@ -1,12 +1,14 @@
 import LastFMTyped from 'lastfm-typed';
 import { Album } from './album.interface';
 export class LastFmDataGrabber {
-  constructor() {}
+  constructor(user: string) {
+    this.USER = user
+  }
 
   API_KEY: string = process.env.API_KEY!
   SECRET_KEY: string = process.env.SHARED_SECRET!
 
-  USER = 'ndeast'
+  USER: string;
 
   lastFmTypedOptions = {
     apiSecret: this.SECRET_KEY,
@@ -39,7 +41,7 @@ export class LastFmDataGrabber {
     }
 
     let outstring = this.buildOutputString(listening, newListens);
-    console.log(outstring)
+    return outstring;
   }
 
   buildOutputString(listening: Map<string, Album[]>, newListens: Map<string, Album[]>) {
