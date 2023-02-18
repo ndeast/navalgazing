@@ -23,24 +23,30 @@ export class LastFmDataGrabber {
   
   async main() {
     
-    const topAlbums7Day = await this.lastfm.user.getTopAlbums(this.USER, { period: '7day' });
+    const topAlbums7Day = await this.lastfm.user.getTopAlbums(this.USER, { period: '7day' }).catch( error => {
+      console.log('error getting top albums 7 day', error)
+    });
     const listening = new Map<string, Album[]>();
     const newListens = new Map<string, Album[]>();
-
-    for (let x of topAlbums7Day['albums']) {
-      let album: Album = {
-        artist: x.artist.name,
-        album: x.name,
-        mbid: x.mbid,
-        playcount: x.playcount,
+    if (topAlbums7Day) {
+      for (let x of topAlbums7Day['albums']) {
+        let album: Album = {
+          artist: x.artist.name,
+          album: x.name,
+          mbid: x.mbid,
+          playcount: x.playcount,
+        }
+        if (album.playcount > 4) {
+          await this.determineNewListen(album).catch( error => {
+            console.log('error determining new listen', album)
+          });
+          album.newListen ? this.pushToMap(album, newListens) : this.pushToMap(album, listening);
+        } 
       }
-      if (album.playcount > 4) {
-        await this.determineNewListen(album);
-        album.newListen ? this.pushToMap(album, newListens) : this.pushToMap(album, listening);
-      } 
-    }
+  }
 
     let outstring = this.buildOutputString(listening, newListens);
+    console.log(outstring)
     return outstring;
   }
 
@@ -64,11 +70,14 @@ export class LastFmDataGrabber {
 
   async determineNewListen(album: Album) {
     let albumInfo: any
-
-    if (album.mbid) {
-      albumInfo = await this.lastfm.album.getInfo({ mbid: album.mbid }, {username: this.USER})
-    } else if (album.album && album.artist) {
-      albumInfo = await this.lastfm.album.getInfo({ album: album.album, artist: album.artist }, {username: this.USER})
+    try {
+      if (album.mbid) {
+        albumInfo = await this.lastfm.album.getInfo({ mbid: album.mbid }, {username: this.USER})
+      } else if (album.album && album.artist) {
+        albumInfo = await this.lastfm.album.getInfo({ album: album.album, artist: album.artist }, {username: this.USER})
+      }
+    } catch (error) {
+        console.log('error getting album: ', album.album, album.artist, album.mbid)
     }
 
     album.newListen = albumInfo.userplaycount === album.playcount ? true : false;

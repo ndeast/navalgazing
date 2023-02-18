@@ -2,7 +2,7 @@ import * as dotenv from "../node_modules/dotenv"
 import { LastFmDataGrabber } from "./lastfm-data-grabber/main";
 import { Telegraf } from "telegraf";
 
-dotenv.config(); 
+dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
