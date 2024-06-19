@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --fix",
-    "go": "npx ts-node /src/main.ts"
+    "go": "npx ts-node ./src/main.ts"
   },
   "keywords": [],
   "author": "",
